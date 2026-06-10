@@ -1,0 +1,3457 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World Model Self-Distillation project page with paper summary, results, and video comparisons.">
+    <meta name="theme-color" content="#0b1114">
+    <link rel="icon" href="assets/images/site-icon.svg" type="image/svg+xml">
+    <title>World Model Self-Distillation</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #10161a;
+        --soft-ink: #334147;
+        --muted: #65757d;
+        --paper: #ffffff;
+        --wash: #eef3f2;
+        --line: #cfdbde;
+        --line-strong: #8ea4aa;
+        --teal: #0f766e;
+        --teal-bright: #62d2c4;
+        --teal-soft: #d7f0ec;
+        --amber: #c06b1f;
+        --amber-soft: #f7e0bd;
+        --blue: #2f5f8f;
+        --red: #a73842;
+        --dark: #0b1114;
+        --dark-2: #162126;
+        --dark-3: #203037;
+        --shadow: 0 22px 60px rgba(8, 17, 20, 0.18);
+        --shadow-soft: 0 14px 34px rgba(8, 17, 20, 0.08);
+        --shadow-lift: 0 24px 56px rgba(8, 17, 20, 0.16);
+        --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(15, 118, 110, 0.05) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(47, 95, 143, 0.045) 1px, transparent 1px),
+          var(--wash);
+        background-size: 42px 42px;
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      img,
+      video {
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a,
+      button {
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          box-shadow 180ms var(--ease),
+          color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 3px solid rgba(98, 210, 196, 0.58);
+        outline-offset: 3px;
+      }
+
+      .site-nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        border-bottom: 1px solid rgba(142, 164, 170, 0.34);
+        background: rgba(246, 250, 250, 0.91);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav-inner {
+        width: min(1260px, calc(100% - 40px));
+        min-height: 64px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        font-weight: 800;
+      }
+
+      .brand:hover,
+      .brand:focus-visible {
+        color: var(--teal);
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(11, 17, 20, 0.82);
+        border-radius: 8px;
+        display: inline-grid;
+        place-items: center;
+        overflow: hidden;
+        background: var(--dark);
+        flex: 0 0 auto;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          box-shadow 180ms var(--ease),
+          color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .brand:hover .brand-mark,
+      .brand:focus-visible .brand-mark {
+        border-color: var(--teal);
+        background: #d7f0ec;
+        box-shadow: 0 0 0 5px rgba(98, 210, 196, 0.16);
+        transform: rotate(-4deg) scale(1.05);
+      }
+
+      .brand-mark img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .brand span:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--soft-ink);
+        font-size: 0.95rem;
+      }
+
+      .nav-links a {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 5px 8px;
+      }
+
+      .nav-links a:hover,
+      .nav-links a:focus-visible {
+        border-color: rgba(15, 118, 110, 0.22);
+        background: rgba(15, 118, 110, 0.07);
+        color: var(--teal);
+      }
+
+      .nav-icon {
+        width: 22px;
+        height: 22px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid rgba(15, 118, 110, 0.18);
+        border-radius: 6px;
+        background: rgba(215, 240, 236, 0.6);
+        color: var(--teal);
+        flex: 0 0 auto;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .nav-icon svg {
+        width: 13px;
+        height: 13px;
+        display: block;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .nav-links a:hover .nav-icon,
+      .nav-links a:focus-visible .nav-icon {
+        border-color: rgba(15, 118, 110, 0.34);
+        background: var(--teal-soft);
+        transform: translateY(-1px);
+      }
+
+      .hero {
+        position: relative;
+        min-height: calc(80svh - 64px);
+        overflow: hidden;
+        color: #ffffff;
+        background: var(--dark);
+        isolation: isolate;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        padding: 4px;
+        z-index: -2;
+        opacity: 0.82;
+      }
+
+      .hero-media video {
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        display: block;
+        object-fit: cover;
+        background: #060809;
+        filter: saturate(0.98) contrast(1.02) brightness(0.98);
+        transition:
+          filter 320ms var(--ease),
+          transform 320ms var(--ease);
+      }
+
+      .hero-media video:nth-child(1) {
+        grid-column: span 2;
+      }
+
+      .hero-media video:nth-child(4) {
+        grid-column: span 2;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(7, 13, 16, 0.92) 0%, rgba(7, 13, 16, 0.56) 48%, rgba(7, 13, 16, 0.78) 100%),
+          linear-gradient(180deg, rgba(7, 13, 16, 0.1) 0%, rgba(7, 13, 16, 0.7) 100%);
+        z-index: -1;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(98, 210, 196, 0.065) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(98, 210, 196, 0.052) 1px, transparent 1px);
+        background-size: 58px 58px;
+        mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.18));
+        z-index: -1;
+      }
+
+      .hero-inner {
+        width: min(1260px, calc(100% - 40px));
+        min-height: calc(80svh - 64px);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 0.76fr) minmax(520px, 1fr);
+        align-items: center;
+        gap: 28px;
+        padding: 72px 0 60px;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+      }
+
+      .hero-method {
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid rgba(142, 164, 170, 0.34);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(10, 22, 25, 0.9), rgba(10, 20, 23, 0.78)),
+          rgba(7, 13, 16, 0.82);
+        box-shadow: 0 28px 72px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(12px);
+        scroll-margin-top: 76px;
+        transition:
+          border-color 220ms var(--ease),
+          box-shadow 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+
+      .hero-method .section-kicker {
+        color: #a8fff3;
+      }
+
+      .hero-method h2 {
+        color: #ffffff;
+        font-size: 1.65rem;
+        line-height: 1.12;
+      }
+
+      .hero-method .lead {
+        margin-top: 10px;
+        color: #dbe8eb;
+        font-size: 0.98rem;
+      }
+
+      .hero-method .method-figure {
+        margin-top: 18px;
+        border-color: rgba(230, 240, 240, 0.56);
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.26);
+      }
+
+      .hero-method .method-steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 14px;
+      }
+
+      .hero-method .step {
+        border-color: rgba(142, 164, 170, 0.28);
+        padding: 14px;
+        background: rgba(7, 14, 17, 0.68);
+        color: #ffffff;
+      }
+
+      .hero-method .step-num,
+      .hero-method .step:nth-child(2) .step-num,
+      .hero-method .step:nth-child(3) .step-num {
+        border: 1px solid rgba(168, 255, 243, 0.28);
+        background: rgba(98, 210, 196, 0.15);
+        color: #a8fff3;
+      }
+
+      .hero-method .step h3 {
+        margin-top: 12px;
+        color: #ffffff;
+        font-size: 0.98rem;
+      }
+
+      .hero-method .step p {
+        color: #c9d9dc;
+        font-size: 0.86rem;
+        line-height: 1.38;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: #a8fff3;
+        font-size: 0.94rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 790px;
+        margin: 0;
+        font-size: 4rem;
+        line-height: 0.98;
+      }
+
+      .hero-resources {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+        max-width: 720px;
+      }
+
+      .resource-link {
+        min-height: 56px;
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.09);
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(10px);
+      }
+
+      .resource-icon {
+        width: 34px;
+        height: 34px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid rgba(168, 255, 243, 0.28);
+        border-radius: 8px;
+        background: rgba(98, 210, 196, 0.15);
+        color: #a8fff3;
+        flex: 0 0 auto;
+      }
+
+      .resource-icon svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .resource-meta {
+        display: grid;
+        gap: 1px;
+      }
+
+      .resource-label {
+        color: #a8fff3;
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .resource-title {
+        color: #ffffff;
+        font-size: 0.96rem;
+        font-weight: 850;
+        line-height: 1.16;
+      }
+
+      .resource-hf-logo {
+        width: 24px;
+        height: 24px;
+        display: block;
+        flex: 0 0 auto;
+      }
+
+      .resource-link:hover,
+      .resource-link:focus-visible {
+        border-color: rgba(168, 255, 243, 0.64);
+        background: rgba(98, 210, 196, 0.16);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.24);
+        transform: translateY(-2px);
+      }
+
+      .subtitle {
+        max-width: 720px;
+        margin: 22px 0 0;
+        color: #eef4f6;
+        font-size: 1.35rem;
+        line-height: 1.45;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 11px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        font-weight: 800;
+        line-height: 1.1;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      }
+
+      .button.primary {
+        border-color: #ffffff;
+        background: #ffffff;
+        color: var(--ink);
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        border-color: #ffffff;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .button.primary:hover,
+      .button.primary:focus-visible {
+        background: #e9fffb;
+        color: var(--teal);
+      }
+
+      .section {
+        padding: 78px 0;
+        background: var(--paper);
+        scroll-margin-top: 76px;
+      }
+
+      .section.alt {
+        background: var(--wash);
+      }
+
+      .section.dark {
+        background: var(--dark);
+        color: #f6fbfc;
+      }
+
+      .wrap {
+        width: min(1180px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .section-heading {
+        display: grid;
+        grid-template-columns: minmax(0, 0.82fr) minmax(260px, 0.58fr);
+        gap: 46px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+
+      .section-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 10px;
+        color: var(--teal);
+        font-size: 0.83rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .dark .section-kicker {
+        color: #8ee6d8;
+      }
+
+      .icon-sprite {
+        display: none;
+      }
+
+      .section-icon {
+        width: 30px;
+        height: 30px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid rgba(15, 118, 110, 0.24);
+        border-radius: 8px;
+        background: var(--teal-soft);
+        color: var(--teal);
+        flex: 0 0 auto;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .section-icon svg {
+        width: 17px;
+        height: 17px;
+        display: block;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .hero-method .section-icon,
+      .dark .section-icon {
+        border-color: rgba(168, 255, 243, 0.3);
+        background: rgba(98, 210, 196, 0.15);
+        color: #a8fff3;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 2.55rem;
+        line-height: 1.08;
+      }
+
+      .lead {
+        margin: 0;
+        color: var(--soft-ink);
+        font-size: 1.08rem;
+      }
+
+      .dark .lead {
+        color: #d4dee5;
+      }
+
+      .method-figure {
+        position: relative;
+        margin: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        transition:
+          border-color 220ms var(--ease),
+          box-shadow 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+
+      .method-figure img {
+        display: block;
+        width: 100%;
+        transition: transform 260ms var(--ease);
+      }
+
+      .method-highlight {
+        position: absolute;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+        border: 2px solid rgba(6, 129, 118, 0.84);
+        border-radius: 10px;
+        background:
+          linear-gradient(135deg, rgba(98, 210, 196, 0.24), rgba(247, 224, 189, 0.16));
+        box-shadow:
+          0 0 0 999px rgba(4, 13, 16, 0.16),
+          0 16px 38px rgba(4, 13, 16, 0.18);
+        transition:
+          opacity 180ms var(--ease),
+          border-color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .method-highlight.task {
+        left: 0.1%;
+        top: 0.5%;
+        width: 37.4%;
+        height: 99%;
+      }
+
+      .method-highlight.distill {
+        left: 37.6%;
+        top: 0.5%;
+        width: 27.1%;
+        height: 99%;
+      }
+
+      .method-highlight.feedback {
+        left: 63.9%;
+        top: 0.5%;
+        width: 35.9%;
+        height: 99.3%;
+      }
+
+      .method-figure[data-active-method="task"] .method-highlight.task,
+      .method-figure[data-active-method="distill"] .method-highlight.distill,
+      .method-figure[data-active-method="feedback"] .method-highlight.feedback {
+        opacity: 1;
+        transform: translateY(-1px);
+      }
+
+      .method-steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        padding: 18px;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          box-shadow 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .step-num {
+        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: var(--teal-soft);
+        color: var(--teal);
+        font-weight: 900;
+        transition:
+          background-color 180ms var(--ease),
+          color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .step:nth-child(2) .step-num {
+        background: #dce8f6;
+        color: var(--blue);
+      }
+
+      .step:nth-child(3) .step-num {
+        background: var(--amber-soft);
+        color: var(--amber);
+      }
+
+      .step h3 {
+        margin: 16px 0 8px;
+        font-size: 1.05rem;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .dataset-release {
+        display: grid;
+        grid-template-columns: minmax(0, 0.82fr) minmax(280px, 0.44fr);
+        gap: 18px;
+        align-items: stretch;
+        margin-bottom: 22px;
+      }
+
+      .dataset-card,
+      .dataset-link-card,
+      .dataset-sample {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        transition:
+          background-color 200ms var(--ease),
+          border-color 200ms var(--ease),
+          box-shadow 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .dataset-card {
+        position: relative;
+        overflow: hidden;
+        padding: 24px;
+        background:
+          linear-gradient(90deg, rgba(15, 118, 110, 0.07) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(47, 95, 143, 0.06) 1px, transparent 1px),
+          #ffffff;
+        background-size: 28px 28px;
+      }
+
+      .dataset-card h3,
+      .dataset-link-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.28rem;
+      }
+
+      .dataset-card p,
+      .dataset-link-card p {
+        margin: 0;
+        color: var(--soft-ink);
+      }
+
+      .dataset-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .dataset-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--teal-soft);
+        color: var(--teal);
+        font-size: 0.82rem;
+        font-weight: 850;
+        transition:
+          background-color 180ms var(--ease),
+          box-shadow 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .dataset-link-card {
+        padding: 22px;
+        display: grid;
+        align-content: center;
+        gap: 16px;
+      }
+
+      .dataset-link-card .button {
+        gap: 9px;
+        width: fit-content;
+        border-color: var(--dark);
+        background: var(--dark);
+        color: #ffffff;
+      }
+
+      .dataset-link-card .button:hover,
+      .dataset-link-card .button:focus-visible {
+        border-color: var(--teal);
+        background: var(--teal);
+      }
+
+      .hf-logo {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+
+      .dataset-samples {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .dataset-sample {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .sample-preview {
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: var(--dark);
+      }
+
+      .sample-preview img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform 320ms var(--ease);
+      }
+
+      .sample-body {
+        display: grid;
+        grid-template-rows: auto auto auto 1fr;
+        padding: 18px;
+      }
+
+      .sample-id {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 900;
+        min-height: 18px;
+        text-transform: uppercase;
+      }
+
+      .sample-body h3 {
+        margin: 10px 0 8px;
+        font-size: 1.16rem;
+        min-height: 2.9em;
+        line-height: 1.22;
+      }
+
+      .task-strip {
+        align-content: start;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 58px;
+        margin: 0 0 12px;
+      }
+
+      .task-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 8px;
+        background: #ffffff;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .task-chip.shown {
+        border-color: rgba(15, 118, 110, 0.28);
+        background: var(--teal-soft);
+        color: var(--teal);
+      }
+
+      .task-chip.more {
+        border-style: dashed;
+        background: #f6f9fa;
+      }
+
+      .sample-body p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .sample-prompts {
+        display: grid;
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .prompt-pair {
+        display: grid;
+        align-content: start;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #f9fbfc;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          box-shadow 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .prompt-label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--teal);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .prompt-pair strong {
+        display: block;
+        color: var(--ink);
+        font-size: 0.94rem;
+        line-height: 1.28;
+      }
+
+      .prompt-pair p {
+        margin-top: 7px;
+        font-size: 0.86rem;
+        line-height: 1.38;
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .chart-panel,
+      .result-note,
+      .figure-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        transition:
+          border-color 200ms var(--ease),
+          box-shadow 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .chart-panel,
+      .figure-panel {
+        padding: 18px;
+        overflow: hidden;
+      }
+
+      .chart-topline {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 14px;
+      }
+
+      .chart-topline h3,
+      .chart-card-header h3 {
+        margin: 0 0 6px;
+        font-size: 1.16rem;
+      }
+
+      .chart-topline p,
+      .chart-card-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .metric-tabs {
+        display: inline-flex;
+        flex: 0 0 auto;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #f6f9fa;
+      }
+
+      .metric-tab {
+        min-height: 34px;
+        border: 0;
+        border-radius: 6px;
+        padding: 7px 10px;
+        background: transparent;
+        color: var(--soft-ink);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.86rem;
+        font-weight: 850;
+      }
+
+      .metric-tab:hover,
+      .metric-tab:focus-visible {
+        background: #ffffff;
+        color: var(--teal);
+      }
+
+      .metric-tab[aria-selected="true"] {
+        background: var(--dark);
+        color: #ffffff;
+      }
+
+      .native-chart {
+        min-height: 260px;
+      }
+
+      .native-chart svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+      }
+
+      .chart-grid-line {
+        stroke: rgba(142, 164, 170, 0.28);
+        stroke-width: 1;
+      }
+
+      .chart-axis-line {
+        stroke: rgba(16, 22, 26, 0.56);
+        stroke-width: 1.25;
+      }
+
+      .chart-tick,
+      .chart-axis-title {
+        fill: var(--muted);
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .chart-axis-title {
+        text-transform: uppercase;
+      }
+
+      .chart-method-label {
+        fill: var(--soft-ink);
+        font-size: 13px;
+        font-weight: 820;
+      }
+
+      .chart-value-label {
+        fill: var(--ink);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .chart-time-label {
+        fill: var(--muted);
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .chart-bar-track {
+        fill: #eef4f5;
+      }
+
+      .chart-bar {
+        transition:
+          filter 180ms var(--ease),
+          transform 180ms var(--ease),
+          width 180ms var(--ease);
+      }
+
+      .chart-bar-row:hover .chart-bar,
+      .chart-bar-row:focus-within .chart-bar,
+      .grouped-chart .chart-bar:hover,
+      .grouped-chart .chart-bar:focus-visible {
+        filter: saturate(1.18) brightness(1.04);
+        transform: translateY(-1px);
+      }
+
+      .chart-line {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2.6;
+      }
+
+      .chart-reference {
+        fill: none;
+        stroke: rgba(16, 22, 26, 0.76);
+        stroke-dasharray: 7 5;
+        stroke-linecap: round;
+        stroke-width: 2;
+      }
+
+      .chart-point {
+        stroke: #ffffff;
+        stroke-width: 2;
+        transition:
+          filter 180ms var(--ease),
+          r 180ms var(--ease);
+      }
+
+      .chart-point:hover {
+        filter: drop-shadow(0 3px 6px rgba(8, 17, 20, 0.18));
+        r: 5.5;
+      }
+
+      .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        margin-top: 12px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--soft-ink);
+        font-size: 0.82rem;
+        font-weight: 760;
+      }
+
+      .legend-swatch {
+        width: 18px;
+        height: 3px;
+        border-radius: 999px;
+        background: currentColor;
+      }
+
+      .legend-swatch.dashed {
+        height: 0;
+        border-top: 2px dashed currentColor;
+        background: transparent;
+      }
+
+      .line-chart-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 14px;
+      }
+
+      .line-chart-pair.three-up {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .line-chart-block {
+        min-width: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #f9fbfc;
+      }
+
+      .line-chart-block h4 {
+        margin: 0 0 8px;
+        color: var(--soft-ink);
+        font-size: 0.95rem;
+      }
+
+      .chart-caption {
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .result-note {
+        padding: 22px;
+      }
+
+      .result-note h3 {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
+      }
+
+      .result-note p {
+        margin: 0 0 16px;
+        color: var(--soft-ink);
+      }
+
+      .mini-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .mini-metric {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #f9fbfc;
+        transition:
+          background-color 180ms var(--ease),
+          border-color 180ms var(--ease),
+          transform 180ms var(--ease);
+      }
+
+      .mini-metric strong {
+        display: block;
+        font-size: 1.35rem;
+      }
+
+      .mini-metric span {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .figure-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .figure-panel {
+        overflow: hidden;
+      }
+
+      .figure-panel.wide {
+        grid-column: 1 / -1;
+      }
+
+      .distill-panel {
+        grid-column: span 2;
+      }
+
+      .distill-panel .line-chart-pair {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .figure-panel:not(.wide) .native-chart {
+        min-height: 220px;
+      }
+
+      .figure-panel img {
+        display: block;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #ffffff;
+        transition:
+          border-color 200ms var(--ease),
+          transform 260ms var(--ease);
+      }
+
+      .figure-panel figcaption {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .gallery-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .tabs {
+        display: inline-flex;
+        padding: 4px;
+        gap: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .tab {
+        min-height: 38px;
+        border: 0;
+        border-radius: 6px;
+        padding: 8px 12px;
+        background: transparent;
+        color: #d9e6ea;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .tab:hover,
+      .tab:focus-visible {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+      }
+
+      .tab[aria-selected="true"] {
+        background: #ffffff;
+        color: var(--ink);
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .comparison-card {
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+        background: var(--dark-2);
+        transition:
+          background-color 200ms var(--ease),
+          border-color 200ms var(--ease),
+          box-shadow 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .comparison-head {
+        min-height: 126px;
+        padding: 16px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        display: grid;
+        align-content: space-between;
+        gap: 10px;
+        transition:
+          background-color 200ms var(--ease),
+          border-color 200ms var(--ease);
+      }
+
+      .sample-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: #aebbc3;
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .comparison-head h3 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 1rem;
+        line-height: 1.35;
+      }
+
+      .video-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .video-cell {
+        min-width: 0;
+        background: #090d10;
+        transition: background-color 180ms var(--ease);
+      }
+
+      .video-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 38px;
+        padding: 8px 12px;
+        color: #dfe8eb;
+        font-size: 0.82rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .video-label .ours {
+        color: #7fe4d7;
+      }
+
+      .video-label .base {
+        color: #ffc36f;
+      }
+
+      .video-cell video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
+        background: #040607;
+        transition:
+          filter 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .gallery-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .ghost-button {
+        min-height: 38px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fbfc;
+        padding: 8px 12px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .ghost-button:hover,
+      .ghost-button:focus-visible {
+        border-color: rgba(142, 230, 216, 0.72);
+        background: rgba(142, 230, 216, 0.14);
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .robot-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.22fr) minmax(340px, 0.72fr);
+        gap: 22px;
+        align-items: center;
+      }
+
+      .robot-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        transition:
+          border-color 200ms var(--ease),
+          box-shadow 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .robot-sample {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      .robot-sample video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        background: #050809;
+        object-fit: contain;
+        transition:
+          filter 200ms var(--ease),
+          transform 260ms var(--ease);
+      }
+
+      .robot-task {
+        display: grid;
+        gap: 3px;
+        padding: 10px 12px 11px;
+        border-top: 1px solid var(--line);
+        background: #f9fbfc;
+      }
+
+      .robot-task span {
+        color: var(--teal);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .robot-task strong {
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.3;
+      }
+
+      .robot-chart-panel {
+        align-self: start;
+        padding: 14px;
+      }
+
+      .robot-chart-panel .chart-card-header h3 {
+        font-size: 1.04rem;
+      }
+
+      .robot-chart-panel .chart-card-header p {
+        font-size: 0.86rem;
+      }
+
+      .robot-chart-panel .native-chart {
+        min-height: 210px;
+      }
+
+      .robot-chart-panel .chart-legend {
+        gap: 7px 10px;
+      }
+
+      .citation {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #0d1114;
+        color: #e7f2f4;
+        overflow: hidden;
+        transition:
+          border-color 200ms var(--ease),
+          box-shadow 200ms var(--ease),
+          transform 200ms var(--ease);
+      }
+
+      .citation-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .citation-paper {
+        display: grid;
+        gap: 8px;
+        padding: 18px 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .citation-paper h3 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 1.22rem;
+        line-height: 1.25;
+      }
+
+      .citation-paper p {
+        margin: 0;
+        color: #c9d9dc;
+        line-height: 1.45;
+      }
+
+      .citation-paper .citation-status {
+        color: #a8fff3;
+        font-size: 0.84rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .copy-button {
+        min-height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 8px;
+        background: transparent;
+        color: #f4fbfc;
+        cursor: pointer;
+        padding: 6px 10px;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .copy-button:hover,
+      .copy-button:focus-visible {
+        border-color: rgba(142, 230, 216, 0.72);
+        background: rgba(142, 230, 216, 0.14);
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .hero:hover .hero-media video {
+          filter: saturate(1.08) contrast(1.08) brightness(1.02);
+        }
+
+        .hero-method:hover,
+        .hero-method:focus-within {
+          border-color: rgba(168, 255, 243, 0.54);
+          box-shadow: 0 32px 82px rgba(0, 0, 0, 0.42);
+          transform: translateY(-3px);
+        }
+
+        .hero-method .step:hover,
+        .step:hover,
+        .step:focus-within {
+          border-color: rgba(15, 118, 110, 0.42);
+          box-shadow: 0 16px 36px rgba(8, 17, 20, 0.12);
+          transform: translateY(-3px);
+        }
+
+        .hero-method .step:hover {
+          border-color: rgba(168, 255, 243, 0.38);
+          background: rgba(10, 24, 27, 0.88);
+          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .step:hover .step-num,
+        .step:focus-within .step-num {
+          transform: scale(1.08);
+        }
+
+        .method-figure:hover,
+        .method-figure:focus-within {
+          border-color: rgba(15, 118, 110, 0.38);
+          box-shadow: var(--shadow-lift);
+          transform: translateY(-2px);
+        }
+
+        .method-figure:hover img {
+          transform: scale(1.015);
+        }
+
+        .dataset-card:hover,
+        .dataset-card:focus-within,
+        .dataset-link-card:hover,
+        .dataset-link-card:focus-within,
+        .dataset-sample:hover,
+        .dataset-sample:focus-within,
+        .chart-panel:hover,
+        .chart-panel:focus-within,
+        .result-note:hover,
+        .result-note:focus-within,
+        .figure-panel:hover,
+        .figure-panel:focus-within,
+        .robot-gallery:hover,
+        .robot-gallery:focus-within,
+        .citation:hover,
+        .citation:focus-within {
+          border-color: rgba(15, 118, 110, 0.36);
+          box-shadow: var(--shadow-lift);
+          transform: translateY(-3px);
+        }
+
+        .dataset-card:hover .dataset-tag {
+          box-shadow: 0 0 0 4px rgba(98, 210, 196, 0.12);
+        }
+
+        .hero-method:hover .section-icon,
+        .section-heading:hover .section-icon {
+          transform: translateY(-1px) scale(1.05);
+        }
+
+        .section-heading:hover .section-icon {
+          border-color: rgba(15, 118, 110, 0.42);
+          background: #c7ebe6;
+        }
+
+        .dark .section-heading:hover .section-icon {
+          border-color: rgba(168, 255, 243, 0.48);
+          background: rgba(98, 210, 196, 0.22);
+        }
+
+        .dataset-tag:hover,
+        .task-chip:hover {
+          transform: translateY(-1px);
+        }
+
+        .dataset-sample:hover .sample-preview img {
+          transform: scale(1.035);
+        }
+
+        .dataset-sample:hover .task-chip.shown {
+          background: var(--teal);
+          color: #ffffff;
+        }
+
+        .prompt-pair:hover,
+        .prompt-pair:focus-within {
+          border-color: rgba(15, 118, 110, 0.32);
+          background: #ffffff;
+          box-shadow: 0 10px 22px rgba(8, 17, 20, 0.08);
+          transform: translateY(-2px);
+        }
+
+        .mini-metric:hover {
+          border-color: rgba(15, 118, 110, 0.28);
+          background: #ffffff;
+          transform: translateY(-2px);
+        }
+
+        .figure-panel:hover img,
+        .robot-gallery:hover video {
+          transform: scale(1.018);
+        }
+
+        .comparison-card:hover,
+        .comparison-card:focus-within {
+          border-color: rgba(142, 230, 216, 0.42);
+          background: #18262c;
+          box-shadow: 0 24px 58px rgba(0, 0, 0, 0.32);
+          transform: translateY(-3px);
+        }
+
+        .comparison-card:hover .comparison-head {
+          border-color: rgba(142, 230, 216, 0.26);
+          background: rgba(142, 230, 216, 0.07);
+        }
+
+        .video-cell:hover {
+          background: #0d171b;
+        }
+
+        .video-cell:hover video {
+          filter: brightness(1.08) saturate(1.08);
+          transform: scale(1.008);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+
+      pre {
+        margin: 0;
+        padding: 18px;
+        overflow-x: auto;
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      footer {
+        padding: 30px 0 42px;
+        color: var(--muted);
+        background: var(--wash);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 980px) {
+        .nav-links {
+          display: none;
+        }
+
+        h1 {
+          font-size: 3.05rem;
+        }
+
+        h2 {
+          font-size: 2.05rem;
+        }
+
+        .hero-media {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-rows: repeat(3, minmax(0, 1fr));
+        }
+
+        .hero-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .section-heading,
+        .dataset-release,
+        .results-grid,
+        .robot-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .method-steps,
+        .dataset-samples {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .comparison-grid,
+        .figure-grid,
+        .line-chart-pair.three-up {
+          grid-template-columns: 1fr;
+        }
+
+        .distill-panel {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .nav-inner,
+        .wrap,
+        .hero-inner {
+          width: min(100% - 28px, 1180px);
+        }
+
+        .hero {
+          min-height: calc(80svh - 64px);
+        }
+
+        .hero-inner {
+          min-height: calc(80svh - 64px);
+          padding: 64px 0 54px;
+        }
+
+        h1 {
+          font-size: 2.45rem;
+        }
+
+        .subtitle {
+          font-size: 1.07rem;
+        }
+
+        .hero-resources {
+          flex-direction: column;
+        }
+
+        .resource-link {
+          width: 100%;
+        }
+
+        .method-steps,
+        .dataset-samples,
+        .mini-metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .section {
+          padding: 56px 0;
+        }
+
+        .chart-topline {
+          flex-direction: column;
+        }
+
+        .metric-tabs {
+          width: 100%;
+          overflow-x: auto;
+        }
+
+        .line-chart-pair {
+          grid-template-columns: 1fr;
+        }
+
+        .robot-gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .video-pair {
+          grid-template-columns: 1fr;
+        }
+
+        .comparison-head {
+          min-height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-method" viewBox="0 0 24 24">
+        <circle cx="5" cy="12" r="2.4"></circle>
+        <circle cx="12" cy="5" r="2.4"></circle>
+        <circle cx="19" cy="12" r="2.4"></circle>
+        <circle cx="12" cy="19" r="2.4"></circle>
+        <path d="M6.9 10.5 10.2 6.9"></path>
+        <path d="M13.8 6.9 17.1 10.5"></path>
+        <path d="M17.1 13.5 13.8 17.1"></path>
+        <path d="M10.2 17.1 6.9 13.5"></path>
+      </symbol>
+      <symbol id="icon-weights" viewBox="0 0 24 24">
+        <rect x="6" y="6" width="12" height="12" rx="2.5"></rect>
+        <path d="M9.5 9.5h5"></path>
+        <path d="M9.5 12h5"></path>
+        <path d="M9.5 14.5h3"></path>
+        <path d="M9 2v4"></path>
+        <path d="M15 2v4"></path>
+        <path d="M9 18v4"></path>
+        <path d="M15 18v4"></path>
+        <path d="M2 9h4"></path>
+        <path d="M2 15h4"></path>
+        <path d="M18 9h4"></path>
+        <path d="M18 15h4"></path>
+      </symbol>
+      <symbol id="icon-dataset" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5" rx="7" ry="3"></ellipse>
+        <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5"></path>
+        <path d="M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path>
+      </symbol>
+      <symbol id="icon-code" viewBox="0 0 24 24">
+        <path d="m8 9-4 3 4 3"></path>
+        <path d="m16 9 4 3-4 3"></path>
+        <path d="m14 5-4 14"></path>
+      </symbol>
+      <symbol id="icon-results" viewBox="0 0 24 24">
+        <path d="M4 19V5"></path>
+        <path d="M4 19h16"></path>
+        <rect x="7" y="12" width="3" height="4" rx="1"></rect>
+        <rect x="12" y="8" width="3" height="8" rx="1"></rect>
+        <rect x="17" y="4" width="3" height="12" rx="1"></rect>
+      </symbol>
+      <symbol id="icon-robotics" viewBox="0 0 24 24">
+        <path d="M12 6V3"></path>
+        <rect x="6" y="6" width="12" height="10" rx="3"></rect>
+        <path d="M8.5 16 7 21"></path>
+        <path d="M15.5 16 17 21"></path>
+        <path d="M9.5 11h.01"></path>
+        <path d="M14.5 11h.01"></path>
+      </symbol>
+      <symbol id="icon-videos" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="14" height="14" rx="3"></rect>
+        <path d="m17 10 4-2.5v9L17 14"></path>
+        <path d="m9.5 9 4 3-4 3V9Z"></path>
+      </symbol>
+      <symbol id="icon-citation" viewBox="0 0 24 24">
+        <path d="M8 11H5.5A2.5 2.5 0 0 0 3 13.5V18h5v-7Z"></path>
+        <path d="M8 11V8a3 3 0 0 1 3-3"></path>
+        <path d="M19 11h-2.5a2.5 2.5 0 0 0-2.5 2.5V18h5v-7Z"></path>
+        <path d="M19 11V8a3 3 0 0 1 3-3"></path>
+      </symbol>
+    </svg>
+    <header class="site-nav">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="World Model Self-Distillation home">
+          <span class="brand-mark"><img src="assets/images/site-icon.svg" alt=""></span>
+          <span>World Model Self-Distillation</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#method"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-method"></use></svg></span><span>Method</span></a>
+          <a href="#videos"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-videos"></use></svg></span><span>Videos</span></a>
+          <a href="#robotics"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-robotics"></use></svg></span><span>Robotics</span></a>
+          <a href="#dataset"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-dataset"></use></svg></span><span>Dataset</span></a>
+          <a href="#results"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-results"></use></svg></span><span>Results</span></a>
+          <a href="#citation"><span class="nav-icon"><svg aria-hidden="true"><use href="#icon-citation"></use></svg></span><span>Citation</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-media" aria-hidden="true">
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/ltx2/wmsd/000058_First_person_view_Place_the_bike_s_front_wheel_over_the_white_rope_barrier.jpg" src="assets/videos/ltx2/wmsd/000058_First_person_view_Place_the_bike_s_front_wheel_over_the_white_rope_barrier.mp4"></video>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/hy15/wmsd/000151_Man_in_center_Lower_one_hand_slowly.jpg" src="assets/videos/hy15/wmsd/000151_Man_in_center_Lower_one_hand_slowly.mp4"></video>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/hy15/wmsd/000198_First-person_view_Use_the_rope_to_swing_toward_the_nearest_visible_shipwreck_s_hull.jpg" src="assets/videos/hy15/wmsd/000198_First-person_view_Use_the_rope_to_swing_toward_the_nearest_visible_shipwreck_s_hull.mp4"></video>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/hy15/wmsd/000118_First_person_view_Interact_with_the_large_case_labeled_COMPLEX.jpg" src="assets/videos/hy15/wmsd/000118_First_person_view_Interact_with_the_large_case_labeled_COMPLEX.mp4"></video>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/ltx2/wmsd/000140_First-person_view_Place_the_rock_from_your_hand_onto_the_ground_directly_in_front_of_the_bush.jpg" src="assets/videos/ltx2/wmsd/000140_First-person_view_Place_the_rock_from_your_hand_onto_the_ground_directly_in_front_of_the_bush.mp4"></video>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/posters/ltx2/wmsd/000026_Player_with_glowing_blue_sword_Pick_up_the_fallen_white_object_beside_the_pedestal.jpg" src="assets/videos/ltx2/wmsd/000026_Player_with_glowing_blue_sword_Pick_up_the_fallen_white_object_beside_the_pedestal.mp4"></video>
+        </div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Task-solving video world models without paired demonstrations</p>
+            <h1 id="page-title">World Model Self-Distillation</h1>
+            <div class="hero-resources" aria-label="Project resources">
+              <a class="resource-link" href="https://huggingface.co/wiqzard2000/World-Model-Self-Distillation" target="_blank" rel="noreferrer">
+                <span class="resource-icon"><svg aria-hidden="true"><use href="#icon-weights"></use></svg></span>
+                <span class="resource-meta">
+                  <span class="resource-label">Hugging Face</span>
+                  <span class="resource-title">Model Weights</span>
+                </span>
+                <img class="resource-hf-logo" src="assets/images/hf-logo.svg" alt="">
+              </a>
+              <a class="resource-link" href="https://huggingface.co/datasets/wiqzard2000/WorldTasks" target="_blank" rel="noreferrer">
+                <span class="resource-icon"><svg aria-hidden="true"><use href="#icon-dataset"></use></svg></span>
+                <span class="resource-meta">
+                  <span class="resource-label">Hugging Face</span>
+                  <span class="resource-title">WorldTasks Dataset</span>
+                </span>
+                <img class="resource-hf-logo" src="assets/images/hf-logo.svg" alt="">
+              </a>
+              <a class="resource-link" href="https://github.com/sebastian-stapf/world-model-self-distillation" target="_blank" rel="noreferrer">
+                <span class="resource-icon"><svg aria-hidden="true"><use href="#icon-code"></use></svg></span>
+                <span class="resource-meta">
+                  <span class="resource-label">GitHub</span>
+                  <span class="resource-title">Project Repository</span>
+                </span>
+              </a>
+            </div>
+            <p class="subtitle">WMSD turns caption-guided video generators into instruction-conditioned Executors, then improves them with VLM feedback while keeping the pretrained Demonstrator as a stabilizing anchor.</p>
+            <div class="hero-actions" aria-label="Project resources">
+              <a class="button primary" href="assets/paper.pdf">Paper PDF</a>
+              <a class="button" href="#videos">Video Comparisons</a>
+              <a class="button" href="#citation">BibTeX</a>
+            </div>
+          </div>
+
+          <aside class="hero-method" id="method" aria-label="WMSD method overview">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-method"></use></svg></span>
+                <span>Method</span>
+              </p>
+              <h2>From Detailed Demonstrations to Compact Task Execution</h2>
+              <p class="lead">The Executor learns to generate plausible task completions from a high-level instruction rather than a full execution recipe.</p>
+            </div>
+
+            <figure class="method-figure" data-method-figure aria-label="WMSD method overview">
+              <img src="assets/images/intro-newnewnew.png" alt="World Model Self-Distillation intro figure showing task generation, executor and demonstrator paths, self-distillation, and VLM feedback.">
+              <span class="method-highlight task" aria-hidden="true"></span>
+              <span class="method-highlight distill" aria-hidden="true"></span>
+              <span class="method-highlight feedback" aria-hidden="true"></span>
+            </figure>
+
+            <div class="method-steps" aria-label="WMSD pipeline">
+              <article class="step" tabindex="0" data-method-target="task">
+                <span class="step-num">1</span>
+                <h3>Generate Task Supervision</h3>
+                <p>A VLM observes an unlabeled scene image and writes a short task plus a detailed solution prompt.</p>
+              </article>
+              <article class="step" tabindex="0" data-method-target="distill">
+                <span class="step-num">2</span>
+                <h3>Distill the Executor</h3>
+                <p>The student sees only the image and task, matching Demonstrator behavior on student rollouts.</p>
+              </article>
+              <article class="step" tabindex="0" data-method-target="feedback">
+                <span class="step-num">3</span>
+                <h3>Improve with Feedback</h3>
+                <p>VLM task rewards up-weight successful videos while the Demonstrator anchor keeps outputs realistic.</p>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section dark" id="videos">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-videos"></use></svg></span>
+                <span>Video Comparisons</span>
+              </p>
+              <h2>WMSD vs. Base Model Generations</h2>
+            </div>
+            <p class="lead">Here we showcase the task-solving ability of our WMSD-trained models and compare them against the original finetuned LTX-2 and HunyuanVideo-1.5 base models.</p>
+          </div>
+
+          <div class="gallery-toolbar">
+            <div class="tabs" role="tablist" aria-label="Model filters">
+              <button class="tab" type="button" role="tab" aria-selected="true" data-filter="ltx2">LTX-2</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="hy15">HunyuanVideo-1.5</button>
+            </div>
+            <div class="gallery-actions">
+              <button class="ghost-button" type="button" data-action="pause-all">Pause All</button>
+            </div>
+          </div>
+
+          <div class="comparison-grid" id="comparison-grid"></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="robotics">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-robotics"></use></svg></span>
+                <span>Robotics Transfer</span>
+              </p>
+              <h2>Competitive Transfer Without Task-Specific Video Supervision</h2>
+            </div>
+            <p class="lead">On DreamGen, WMSD trained on WorldTasks transfers to robotic tasks and reaches competitive performance against SFT-trained video generators.</p>
+          </div>
+          <div class="robot-grid">
+            <figure class="robot-gallery" aria-label="GR00T robotics transfer samples">
+              <div class="robot-sample">
+                <video autoplay controls muted loop playsinline preload="metadata" src="assets/videos/robotics/gr00t-pitcher-plant.mp4" aria-label="GR00T video: the right hand picks up a plastic pitcher and pours water onto a green plant."></video>
+                <figcaption class="robot-task">
+                  <span>Task</span>
+                  <strong>Use the right hand to pick up the plastic pitcher and pour water onto the green plant.</strong>
+                </figcaption>
+              </div>
+              <div class="robot-sample">
+                <video autoplay controls muted loop playsinline preload="metadata" src="assets/videos/robotics/gr00t-bottle-scanner.mp4" aria-label="GR00T video: the right hand picks up a bottle and moves it over a barcode scanner."></video>
+                <figcaption class="robot-task">
+                  <span>Task</span>
+                  <strong>Use the right hand to pick up the bottle and move it over the barcode scanner.</strong>
+                </figcaption>
+              </div>
+              <div class="robot-sample">
+                <video autoplay controls muted loop playsinline preload="metadata" src="assets/videos/robotics/gr00t-pink-bottle-flower.mp4" aria-label="GR00T video: the right hand picks up a pink bottle and pours water on a flower."></video>
+                <figcaption class="robot-task">
+                  <span>Task</span>
+                  <strong>Use the right hand to pick up the pink bottle and pour water on the flower.</strong>
+                </figcaption>
+              </div>
+            </figure>
+            <div class="chart-panel robot-chart-panel" aria-label="DreamGen robotics results">
+              <div class="chart-card-header">
+                <h3>DreamGen Transfer Scores</h3>
+                <p>Grouped native bars compare WMSD against zero-shot and supervised fine-tuned baselines.</p>
+              </div>
+              <div id="robotics-chart" class="native-chart grouped-chart" role="img" aria-label="Grouped bar chart of DreamGen robotics results"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="dataset">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-dataset"></use></svg></span>
+                <span>Dataset</span>
+              </p>
+              <h2>WorldTasks Pairs Scenes with Compact Task Instructions</h2>
+            </div>
+          </div>
+
+          <div class="dataset-release">
+            <article class="dataset-card">
+              <h3>Dataset Release Preview</h3>
+              <p>WorldTasks is constructed from pre-extracted images, filtered for visual quality, aesthetic score, and VLM semantic suitability. WMSD uses each short task plus its generated solution to train the Demonstrator-to-Executor pipeline.</p>
+              <div class="dataset-tags" aria-label="Dataset contents">
+                <span class="dataset-tag">20k training images</span>
+                <span class="dataset-tag">8 task-solution pairs per image</span>
+                <span class="dataset-tag">200 benchmark tasks</span>
+              </div>
+            </article>
+            <aside class="dataset-link-card">
+              <div>
+                <h3>Hugging Face Dataset</h3>
+                <p>Public dataset page for WorldTasks. The full dataset files and usage instructions will be added with the release.</p>
+              </div>
+              <a class="button hf-button" href="https://huggingface.co/datasets/wiqzard2000/WorldTasks" target="_blank" rel="noreferrer">
+                <img class="hf-logo" src="assets/images/hf-logo.svg" alt="">
+                <span>Open Hugging Face</span>
+              </a>
+            </aside>
+          </div>
+
+          <div class="dataset-samples" aria-label="Dataset sample records">
+            <article class="dataset-sample">
+              <div class="sample-preview">
+                <img src="assets/images/dataset/100_4.png" alt="Appendix dataset sample 100_4 showing a man in a blue shirt on a street.">
+              </div>
+              <div class="sample-body">
+                <div class="sample-id">
+                  <span>Sample 100_4</span>
+                </div>
+                <h3>Initial Frame with a Person Centered on a Road Scene</h3>
+                <div class="task-strip" aria-label="Tasks available for sample 100_4">
+                  <span class="task-chip shown">Task 1</span>
+                  <span class="task-chip shown">Task 2</span>
+                  <span class="task-chip more">Task 3</span>
+                  <span class="task-chip more">Task 4</span>
+                  <span class="task-chip more">...</span>
+                  <span class="task-chip more">Task 8</span>
+                </div>
+                <div class="sample-prompts">
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 1</span>
+                    <strong>[Man in blue shirt]: Step onto the yellow lane marking and stop exactly at the white arrow's tip.</strong>
+                    <p>Description: The man in the blue shirt begins walking forward along the center of the road, his feet deliberately stepping onto the double yellow lane marking, and continues moving straight ahead until he reaches the tip of the white directional arrow painted on the asphalt, where he halts and stands still.</p>
+                  </div>
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 2</span>
+                    <strong>[Person in blue shirt]: Move forward to the nearest building.</strong>
+                    <p>Description: The person in the blue shirt begins walking forward along the center of the road, maintaining a steady pace toward the building on the left side of the street, their body oriented directly ahead as they cross the yellow double lines; after a few steps, they continue moving forward until they reach the sidewalk adjacent to the building, then they halt beside the American flag mounted on the building's facade, coming to a complete stop with their feet planted on the pavement.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="dataset-sample">
+              <div class="sample-preview">
+                <img src="assets/images/dataset/145_4.png" alt="Appendix dataset sample 145_4 showing a character with a horned helmet in a forest scene.">
+              </div>
+              <div class="sample-body">
+                <div class="sample-id">
+                  <span>Sample 145_4</span>
+                </div>
+                <h3>Fantasy Scene with a Controllable Character and Nearby Objects</h3>
+                <div class="task-strip" aria-label="Tasks available for sample 145_4">
+                  <span class="task-chip shown">Task 1</span>
+                  <span class="task-chip shown">Task 2</span>
+                  <span class="task-chip more">Task 3</span>
+                  <span class="task-chip more">Task 4</span>
+                  <span class="task-chip more">...</span>
+                  <span class="task-chip more">Task 8</span>
+                </div>
+                <div class="sample-prompts">
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 1</span>
+                    <strong>[Character with horned helmet]: Use the bow to aim at the tree trunk directly ahead.</strong>
+                    <p>Description: The character with the horned helmet slowly turns their upper body toward the tree trunk directly ahead, simultaneously drawing the bowstring back with their right hand while keeping their left hand steady on the bow's grip, their gaze fixed on the target as the bowstring tenses and the arrow nocks align with the trunk.</p>
+                  </div>
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 2</span>
+                    <strong>[Character with horned helmet]: Move to the largest boulder and stop beside its left edge.</strong>
+                    <p>Description: The character with the horned helmet begins walking forward along the stone path, their body oriented toward the largest boulder visible to the left, and after a few steps, they decelerate, shifting their weight slightly as they turn their head to the left to align their gaze with the boulder's edge, then halt precisely beside its left side, their right hand resting on their hip while their left hand remains near the hilt of their weapon.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="dataset-sample">
+              <div class="sample-preview">
+                <img src="assets/images/dataset/6888_1.png" alt="Appendix dataset sample 6888_1 showing a first-person racing cockpit.">
+              </div>
+              <div class="sample-body">
+                <div class="sample-id">
+                  <span>Sample 6888_1</span>
+                </div>
+                <h3>First-Person Driving Frame with Steering Controls and Track Context</h3>
+                <div class="task-strip" aria-label="Tasks available for sample 6888_1">
+                  <span class="task-chip shown">Task 1</span>
+                  <span class="task-chip shown">Task 2</span>
+                  <span class="task-chip more">Task 3</span>
+                  <span class="task-chip more">Task 4</span>
+                  <span class="task-chip more">...</span>
+                  <span class="task-chip more">Task 8</span>
+                </div>
+                <div class="sample-prompts">
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 1</span>
+                    <strong>[Driver in racing suit]: Press the red button on the steering wheel's right side.</strong>
+                    <p>Description: The driver's right hand, clad in a black racing glove, moves slightly forward and inward, pressing the red button located on the right side of the steering wheel, while the left hand remains steady on the left side of the wheel, and the vehicle continues forward along the track with the dashboard displaying 186 MPH and an overtaking indicator active.</p>
+                  </div>
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 2</span>
+                    <strong>[First-person view]: Align the car's front bumper with the white track curb ahead.</strong>
+                    <p>Description: The driver's hands grip the steering wheel firmly, thumbs pressing the paddle shifters while the left hand subtly adjusts its position to maintain control; simultaneously, the right hand makes a slight inward rotation of the wheel to initiate a gentle steering correction toward the white track curb ahead, and the car's front bumper begins to approach the curb as the vehicle decelerates slightly, aligning its front edge with the curb's edge while the dashboard display updates to reflect the new position and speed.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="dataset-sample">
+              <div class="sample-preview">
+                <img src="assets/images/dataset/7637_6.png" alt="Appendix dataset sample 7637_6 showing a city crosswalk with a person holding an umbrella and a black minivan.">
+              </div>
+              <div class="sample-body">
+                <div class="sample-id">
+                  <span>Sample 7637_6</span>
+                </div>
+                <h3>Crosswalk Scene with Multiple Possible Agents and Actions</h3>
+                <div class="task-strip" aria-label="Tasks available for sample 7637_6">
+                  <span class="task-chip shown">Task 1</span>
+                  <span class="task-chip shown">Task 2</span>
+                  <span class="task-chip more">Task 3</span>
+                  <span class="task-chip more">Task 4</span>
+                  <span class="task-chip more">...</span>
+                  <span class="task-chip more">Task 8</span>
+                </div>
+                <div class="sample-prompts">
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 1</span>
+                    <strong>[Man holding black umbrella]: Step off the crosswalk and hand the umbrella to the sidewalk curb.</strong>
+                    <p>Description: The man holding the black umbrella continues walking forward, stepping off the crosswalk onto the sidewalk, then lowers his arm and extends his hand toward the curb, releasing the umbrella to rest against the sidewalk edge.</p>
+                  </div>
+                  <div class="prompt-pair">
+                    <span class="prompt-label">Task 2</span>
+                    <strong>[Black minivan]: Align its front bumper with the white pedestrian lane marking.</strong>
+                    <p>Description: The black minivan advances forward while maintaining its current trajectory, its front bumper gradually moving closer to the white pedestrian lane marking on the asphalt, adjusting its position as it proceeds along the crosswalk.</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="results">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-results"></use></svg></span>
+                <span>Results</span>
+              </p>
+              <h2>WMSD Improves Both LTX-2 and HunyuanVideo-1.5</h2>
+            </div>
+            <p class="lead">On WorldTasksBench, WMSD raises task completion, correct-agent behavior, and physical consistency while preserving the inference cost of the underlying model.</p>
+          </div>
+
+          <div class="results-grid">
+            <div class="chart-panel benchmark-panel" aria-label="WorldTasksBench results">
+              <div class="chart-topline">
+                <div>
+                  <h3>WorldTasksBench Score Breakdown</h3>
+                  <p>Switch metrics to compare task completion, correct-agent behavior, physical consistency, and average score. Inference time is shown at the end of each bar.</p>
+                </div>
+                <div class="metric-tabs" role="tablist" aria-label="WorldTasksBench metric">
+                  <button class="metric-tab" type="button" role="tab" aria-selected="false" data-metric="task">Task</button>
+                  <button class="metric-tab" type="button" role="tab" aria-selected="false" data-metric="agent">Agent</button>
+                  <button class="metric-tab" type="button" role="tab" aria-selected="false" data-metric="consistency">Consistency</button>
+                  <button class="metric-tab" type="button" role="tab" aria-selected="true" data-metric="avg">Avg.</button>
+                </div>
+              </div>
+              <div id="benchmark-chart" class="native-chart benchmark-chart" role="img" aria-label="Native bar chart of WorldTasksBench results"></div>
+            </div>
+
+            <aside class="result-note">
+              <h3>Benchmark Setup</h3>
+              <p>WorldTasksBench contains 200 image-task pairs. A VLM evaluates each generated video for task completion, whether the intended agent acts, and physical plausibility.</p>
+              <div class="mini-metrics">
+                <div class="mini-metric">
+                  <strong>20k</strong>
+                  <span>training images</span>
+                </div>
+                <div class="mini-metric">
+                  <strong>8</strong>
+                  <span>task-solution pairs per image</span>
+                </div>
+                <div class="mini-metric">
+                  <strong>200</strong>
+                  <span>benchmark tasks</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="figure-grid graph-grid" aria-label="Native ablation graphs">
+            <article class="figure-panel distill-panel">
+              <div class="chart-card-header">
+                <h3>On-Policy Self-Distillation Keeps Improving</h3>
+                <p>Both charts are rendered from the paper's ablation traces: WorldTasks score rises while PickScore remains stable.</p>
+              </div>
+              <div class="line-chart-pair">
+                <div class="line-chart-block">
+                  <h4>Average WorldTasks Score</h4>
+                  <div id="distill-worldtasks-chart" class="native-chart line-chart" role="img" aria-label="Line chart comparing self-distillation variants on WorldTasksBench"></div>
+                </div>
+                <div class="line-chart-block">
+                  <h4>PickScore</h4>
+                  <div id="distill-pick-chart" class="native-chart line-chart" role="img" aria-label="Line chart comparing self-distillation variants on PickScore"></div>
+                </div>
+              </div>
+              <p class="chart-caption">Off-policy distillation saturates earlier, while on-policy variants continue improving across training steps.</p>
+            </article>
+
+            <article class="figure-panel anchor-panel">
+              <div class="chart-card-header">
+                <h3>The Demonstrator Anchor Needs the Right Strength</h3>
+                <p>The beta_d sweep shows the best WorldTasks score at a moderate anchor setting.</p>
+              </div>
+              <div id="beta-chart" class="native-chart line-chart" role="img" aria-label="Line chart of average WorldTasks score across beta_d values"></div>
+              <p class="chart-caption">Too little anchor weakens teacher guidance; too much anchor constrains task improvement.</p>
+            </article>
+
+            <article class="figure-panel wide">
+              <div class="chart-card-header">
+                <h3>RL Gains Are Largest When Paired with On-Policy Distillation</h3>
+                <p>Native line charts show task, agent, and realism scores for the training settings from the paper.</p>
+              </div>
+              <div class="line-chart-pair three-up">
+                <div class="line-chart-block">
+                  <h4>Task Score</h4>
+                  <div id="rl-task-chart" class="native-chart line-chart" role="img" aria-label="Line chart of task score across RL ablations"></div>
+                </div>
+                <div class="line-chart-block">
+                  <h4>Agent Score</h4>
+                  <div id="rl-agent-chart" class="native-chart line-chart" role="img" aria-label="Line chart of agent score across RL ablations"></div>
+                </div>
+                <div class="line-chart-block">
+                  <h4>Realism Score</h4>
+                  <div id="rl-realism-chart" class="native-chart line-chart" role="img" aria-label="Line chart of realism score across RL ablations"></div>
+                </div>
+              </div>
+              <p class="chart-caption">On-policy + RL climbs above the Demonstrator reference across the task-solving metrics.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="citation">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">
+                <span class="section-icon"><svg aria-hidden="true"><use href="#icon-citation"></use></svg></span>
+                <span>Citation</span>
+              </p>
+              <h2>Reference the Paper</h2>
+            </div>
+            <p class="lead">Use the citation below for the current arXiv preprint version.</p>
+          </div>
+
+          <div class="citation">
+            <div class="citation-header">
+              <strong>BibTeX</strong>
+              <button class="copy-button" type="button" data-action="copy-citation">Copy</button>
+            </div>
+            <div class="citation-paper">
+              <span class="citation-status">arXiv preprint</span>
+              <h3>World Model Self-Distillation: Training World Models to Solve General Tasks</h3>
+              <p>Sebastian Stapf, Pablo Acuaviva Huertos, Aram Davtyan, and Paolo Favaro</p>
+              <p>Department of Computer Science, University of Bern</p>
+              <p>{sebastian.stapf, pablo.acuavivahuertos, aram.davtyan, paolo.favaro}@unibe.ch</p>
+            </div>
+            <pre id="bibtex">@misc{stapf2026worldmodelselfdistillation,
+  title = {World Model Self-Distillation: Training World Models to Solve General Tasks},
+  author = {Stapf, Sebastian and Acuaviva Huertos, Pablo and Davtyan, Aram and Favaro, Paolo},
+  institution = {Department of Computer Science, University of Bern},
+  year = {2026},
+  note = {arXiv preprint}
+}</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>World Model Self-Distillation project website.</span>
+      </div>
+    </footer>
+
+    <script>
+      const comparisonGroups = [
+        {
+          id: "ltx2",
+          name: "LTX-2",
+          modelLabel: "LTX-2",
+          wmsdDirectory: "assets/videos/ltx2/wmsd/",
+          baseDirectory: "assets/videos/ltx2/base/",
+          posterWmsdDirectory: "assets/posters/ltx2/wmsd/",
+          posterBaseDirectory: "assets/posters/ltx2/base/",
+          files: [
+            "000058_First_person_view_Place_the_bike_s_front_wheel_over_the_white_rope_barrier.mp4",
+            "000049_First_person_view_Turn_right_to_face_the_welcome_sign_on_the_easel.mp4",
+            "000002_First_person_view_Move_to_the_right_to_examine_the_distant_house.mp4",
+            "000140_First-person_view_Place_the_rock_from_your_hand_onto_the_ground_directly_in_front_of_the_bush.mp4",
+            "000104_First_person_view_Turn_right_to_face_the_kneeling_figure.mp4",
+            "000099_Player_character_Align_the_wire_with_the_exposed_terminal_on_the_black_box.mp4",
+            "000190_First-person_view_Press_the_trigger_once_while_aiming_at_the_distant_bench_to_test_weapon_function.mp4",
+            "000026_Player_with_glowing_blue_sword_Pick_up_the_fallen_white_object_beside_the_pedestal.mp4",
+            "000048_First_person_view_Walk_toward_the_building_entrance_on_the_right.mp4",
+            "000005_First_person_view_Pick_up_the_ammo_box_on_the_wooden_platform.mp4",
+            "000135_First_person_view_Aim_the_laser_pointer_at_the_second-floor_balcony.mp4",
+            "000137_First_person_view_Aim_rifle_at_the_glowing_neon_sign_s_center_and_hold_steady_for_3_seconds.mp4"
+          ]
+        },
+        {
+          id: "hy15",
+          name: "HunyuanVideo-1.5",
+          modelLabel: "HY1.5",
+          wmsdDirectory: "assets/videos/hy15/wmsd/",
+          baseDirectory: "assets/videos/hy15/base/",
+          posterWmsdDirectory: "assets/posters/hy15/wmsd/",
+          posterBaseDirectory: "assets/posters/hy15/base/",
+          files: [
+            "000151_Man_in_center_Lower_one_hand_slowly.mp4",
+            "000038_First-person_view_Align_the_rifle_s_scope_with_the_distant_tree_trunk_s_center.mp4",
+            "000198_First-person_view_Use_the_rope_to_swing_toward_the_nearest_visible_shipwreck_s_hull.mp4",
+            "000016_Agent_with_rifle_Walk_to_the_door_and_open_it.mp4",
+            "000026_Player_with_glowing_blue_sword_Pick_up_the_fallen_white_object_beside_the_pedestal.mp4",
+            "000156_First_person_view_Turn_right_and_head_toward_the_iron_railing.mp4",
+            "000118_First_person_view_Interact_with_the_large_case_labeled_COMPLEX.mp4",
+            "000010_First_person_view_Aim_the_weapon_at_the_doorway_entrance.mp4",
+            "000125_Agent_in_red_robe_Adjust_stance_to_face_the_central_light_pattern.mp4",
+            "000115_Batman_Crouch_near_the_metal_grates_on_the_floor.mp4"
+          ]
+        }
+      ];
+
+      const actionVerbs = new Set([
+        "Adjust",
+        "Accelerate",
+        "Aim",
+        "Align",
+        "Check",
+        "Crouch",
+        "Dive",
+        "Dodge",
+        "Examine",
+        "Fire",
+        "Grasp",
+        "Interact",
+        "Jump",
+        "Keep",
+        "Listen",
+        "Lower",
+        "Look",
+        "Move",
+        "Pick",
+        "Place",
+        "Press",
+        "Pull",
+        "Push",
+        "Reach",
+        "Shift",
+        "Shoot",
+        "Step",
+        "Turn",
+        "Use",
+        "Walk",
+        "Zoom"
+      ]);
+
+      let activeFilter = "ltx2";
+      let activeBenchmarkMetric = "avg";
+
+      const chartPalette = {
+        green: "#66c2a5",
+        orange: "#fc8d62",
+        blue: "#8da0cb",
+        pink: "#e78ac3",
+        teal: "#0f766e",
+        slate: "#8ea4aa",
+        dark: "#10161a"
+      };
+
+      const benchmarkMetrics = {
+        task: "Task",
+        agent: "Agent",
+        consistency: "Consistency",
+        avg: "Average"
+      };
+
+      const benchmarkResults = [
+        { method: "HY1.5", variant: "base", task: 0.463, agent: 0.540, consistency: 0.780, avg: 0.597, time: "112s" },
+        { method: "HY1.5 + WMSD", variant: "wmsd", task: 0.574, agent: 0.630, consistency: 0.828, avg: 0.673, time: "112s" },
+        { method: "LTX-2", variant: "base", task: 0.315, agent: 0.395, consistency: 0.690, avg: 0.467, time: "52.2s" },
+        { method: "LTX-2 + WMSD", variant: "wmsd", task: 0.452, agent: 0.500, consistency: 0.693, avg: 0.548, time: "52.2s" },
+        { method: "LTX-2 8-step", variant: "base", task: 0.285, agent: 0.391, consistency: 0.694, avg: 0.455, time: "10.1s" },
+        { method: "LTX-2 8-step + VLM", variant: "vlm", task: 0.495, agent: 0.572, consistency: 0.732, avg: 0.598, time: "10.1s" },
+        { method: "LTX-2 8-step + WMSD", variant: "wmsd", task: 0.605, agent: 0.691, consistency: 0.882, avg: 0.726, time: "10.1s" }
+      ];
+
+      const roboticsSeries = [
+        { key: "zeroShot", label: "Best zero-shot", color: chartPalette.slate },
+        { key: "sft", label: "Best SFT", color: chartPalette.blue },
+        { key: "wmsd", label: "WMSD LTX-2", color: chartPalette.teal }
+      ];
+
+      const roboticsResults = [
+        { metric: "Object", zeroShot: 32.0, sft: 62.0, wmsd: 70.0 },
+        { metric: "Behavior", zeroShot: 31.9, sft: 61.7, wmsd: 57.4 },
+        { metric: "Environment", zeroShot: 41.4, sft: 65.5, wmsd: 58.6 }
+      ];
+
+      const trainingSteps = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      const sparseTrainingSteps = [0, 20, 40, 60, 80, 90, 100];
+
+      function makeStepSeries(values, steps = trainingSteps) {
+        return values.map((value, index) => ({
+          x: steps[index],
+          y: value
+        }));
+      }
+
+      const distillSeries = [
+        {
+          label: "Off-policy",
+          color: chartPalette.green,
+          worldTasks: makeStepSeries([0.461, 0.458, 0.500, 0.519, 0.531, 0.548, 0.555, 0.549, 0.539, 0.525, 0.531]),
+          pick: makeStepSeries([0.7600, 0.7609, 0.7603, 0.7604, 0.7609, 0.7613, 0.7614, 0.7617, 0.7613, 0.7613, 0.7614])
+        },
+        {
+          label: "On-policy anchor only",
+          color: chartPalette.orange,
+          worldTasks: makeStepSeries([0.461, 0.479, 0.487, 0.510, 0.545, 0.530, 0.548, 0.546, 0.552, 0.557, 0.558]),
+          pick: makeStepSeries([0.7600, 0.7612, 0.7616, 0.7626, 0.7627, 0.7629, 0.7631, 0.7632, 0.7633, 0.7633, 0.7637])
+        },
+        {
+          label: "On-policy",
+          color: chartPalette.blue,
+          worldTasks: makeStepSeries([0.451, 0.467, 0.481, 0.506, 0.513, 0.516, 0.540, 0.545, 0.560, 0.563, 0.570]),
+          pick: makeStepSeries([0.7600, 0.7610, 0.7615, 0.7625, 0.7625, 0.7622, 0.7628, 0.7629, 0.7634, 0.7634, 0.7635])
+        }
+      ];
+
+      const betaLabels = ["0", ".001", ".01", ".02", ".05", ".1", ".5", "1"];
+      const betaSeries = [
+        {
+          label: "On-policy",
+          color: chartPalette.blue,
+          points: [0.531, 0.614, 0.656, 0.624, 0.555, 0.549, 0.536, 0.557].map((value, index) => ({
+            x: index,
+            y: value,
+            label: betaLabels[index]
+          }))
+        }
+      ];
+
+      const rlSeries = [
+        {
+          label: "Alternating + RL",
+          color: chartPalette.green,
+          task: makeStepSeries([0.327, 0.327, 0.337, 0.409, 0.433, 0.433, 0.457, 0.452, 0.486, 0.499, 0.522]),
+          agent: makeStepSeries([0.404, 0.433, 0.442, 0.452, 0.481, 0.538, 0.538, 0.553, 0.567, 0.598, 0.604]),
+          realism: makeStepSeries([0.678, 0.673, 0.673, 0.726, 0.736, 0.774, 0.760, 0.769, 0.788, 0.799, 0.810])
+        },
+        {
+          label: "Off-policy + Dem RL",
+          color: chartPalette.orange,
+          task: makeStepSeries([0.335, 0.325, 0.355, 0.380, 0.405, 0.423, 0.453], sparseTrainingSteps),
+          agent: makeStepSeries([0.380, 0.410, 0.435, 0.470, 0.500, 0.530, 0.550], sparseTrainingSteps),
+          realism: makeStepSeries([0.680, 0.665, 0.690, 0.720, 0.720, 0.722, 0.732], sparseTrainingSteps)
+        },
+        {
+          label: "On-policy + RL",
+          color: chartPalette.blue,
+          task: makeStepSeries([0.337, 0.337, 0.380, 0.409, 0.500, 0.505, 0.529, 0.577, 0.606, 0.606, 0.649]),
+          agent: makeStepSeries([0.394, 0.413, 0.490, 0.505, 0.558, 0.606, 0.644, 0.673, 0.721, 0.731, 0.755]),
+          realism: makeStepSeries([0.659, 0.663, 0.688, 0.726, 0.764, 0.793, 0.808, 0.870, 0.861, 0.865, 0.870])
+        },
+        {
+          label: "RL only",
+          color: chartPalette.pink,
+          task: makeStepSeries([0.341, 0.370, 0.356, 0.389, 0.447, 0.519, 0.490, 0.505, 0.505, 0.466, 0.514]),
+          agent: makeStepSeries([0.394, 0.418, 0.413, 0.490, 0.553, 0.572, 0.567, 0.596, 0.582, 0.562, 0.611]),
+          realism: makeStepSeries([0.654, 0.663, 0.716, 0.731, 0.750, 0.736, 0.779, 0.788, 0.812, 0.808, 0.837])
+        }
+      ];
+
+      function createSvgElement(tagName, attributes = {}) {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", tagName);
+        Object.entries(attributes).forEach(([key, value]) => {
+          element.setAttribute(key, value);
+        });
+        return element;
+      }
+
+      function appendSvgText(parent, text, attributes = {}) {
+        const element = createSvgElement("text", attributes);
+        element.textContent = text;
+        parent.appendChild(element);
+        return element;
+      }
+
+      function formatScore(value, digits = 3) {
+        return value.toFixed(digits);
+      }
+
+      function variantColor(variant) {
+        if (variant === "wmsd") {
+          return chartPalette.teal;
+        }
+
+        if (variant === "vlm") {
+          return chartPalette.blue;
+        }
+
+        return chartPalette.slate;
+      }
+
+      function renderBenchmarkChart(metric = activeBenchmarkMetric) {
+        const target = document.querySelector("#benchmark-chart");
+        if (!target) {
+          return;
+        }
+
+        activeBenchmarkMetric = metric;
+        target.innerHTML = "";
+        target.setAttribute("aria-label", `${benchmarkMetrics[metric]} scores on WorldTasksBench`);
+
+        const width = 850;
+        const rowHeight = 43;
+        const margin = { top: 30, right: 104, bottom: 36, left: 205 };
+        const plotWidth = width - margin.left - margin.right;
+        const height = margin.top + margin.bottom + benchmarkResults.length * rowHeight;
+        const barHeight = 22;
+        const svg = createSvgElement("svg", {
+          viewBox: `0 0 ${width} ${height}`,
+          role: "img",
+          "aria-label": `${benchmarkMetrics[metric]} score comparison`
+        });
+        const title = createSvgElement("title");
+        title.textContent = `${benchmarkMetrics[metric]} score comparison across models`;
+        svg.appendChild(title);
+
+        [0, 0.25, 0.5, 0.75, 1].forEach((tick) => {
+          const x = margin.left + tick * plotWidth;
+          svg.appendChild(createSvgElement("line", {
+            class: "chart-grid-line",
+            x1: x,
+            y1: margin.top - 8,
+            x2: x,
+            y2: height - margin.bottom + 3
+          }));
+          const tickLabel = tick === 0 || tick === 1 ? String(tick) : tick.toFixed(2).replace(/0$/, "");
+          appendSvgText(svg, tickLabel, {
+            class: "chart-tick",
+            x,
+            y: height - 12,
+            "text-anchor": "middle"
+          });
+        });
+
+        appendSvgText(svg, benchmarkMetrics[metric], {
+          class: "chart-axis-title",
+          x: margin.left,
+          y: 14,
+          "text-anchor": "start"
+        });
+
+        appendSvgText(svg, "E2E", {
+          class: "chart-axis-title",
+          x: width - 8,
+          y: 14,
+          "text-anchor": "end"
+        });
+
+        benchmarkResults.forEach((entry, index) => {
+          const value = entry[metric];
+          const y = margin.top + index * rowHeight;
+          const barY = y + 11;
+          const barWidth = value * plotWidth;
+          const row = createSvgElement("g", {
+            class: "chart-bar-row",
+            tabindex: "0"
+          });
+          const rowTitle = createSvgElement("title");
+          rowTitle.textContent = `${entry.method}: ${formatScore(value)} ${benchmarkMetrics[metric].toLowerCase()} score, ${entry.time} end-to-end`;
+          row.appendChild(rowTitle);
+
+          appendSvgText(row, entry.method, {
+            class: "chart-method-label",
+            x: margin.left - 12,
+            y: barY + 15,
+            "text-anchor": "end"
+          });
+
+          row.appendChild(createSvgElement("rect", {
+            class: "chart-bar-track",
+            x: margin.left,
+            y: barY,
+            width: plotWidth,
+            height: barHeight,
+            rx: 7
+          }));
+
+          row.appendChild(createSvgElement("rect", {
+            class: "chart-bar",
+            x: margin.left,
+            y: barY,
+            width: barWidth,
+            height: barHeight,
+            rx: 7,
+            fill: variantColor(entry.variant)
+          }));
+
+          appendSvgText(row, formatScore(value), {
+            class: "chart-value-label",
+            x: margin.left + barWidth + 8,
+            y: barY + 15
+          });
+
+          appendSvgText(row, entry.time, {
+            class: "chart-time-label",
+            x: width - 8,
+            y: barY + 15,
+            "text-anchor": "end"
+          });
+
+          svg.appendChild(row);
+        });
+
+        target.appendChild(svg);
+      }
+
+      function appendLegend(target, items, reference) {
+        const legend = document.createElement("div");
+        legend.className = "chart-legend";
+        [...items, reference].filter(Boolean).forEach((item) => {
+          const legendItem = document.createElement("span");
+          legendItem.className = "legend-item";
+          legendItem.style.color = item.color || chartPalette.dark;
+
+          const swatch = document.createElement("span");
+          swatch.className = item.dashed ? "legend-swatch dashed" : "legend-swatch";
+          legendItem.appendChild(swatch);
+
+          const label = document.createElement("span");
+          label.textContent = item.label;
+          legendItem.appendChild(label);
+          legend.appendChild(legendItem);
+        });
+        target.appendChild(legend);
+      }
+
+      function renderLineChart(selector, config) {
+        const target = document.querySelector(selector);
+        if (!target) {
+          return;
+        }
+
+        target.innerHTML = "";
+        const width = config.width || 620;
+        const height = config.height || 290;
+        const margin = { top: 22, right: 24, bottom: 46, left: 56 };
+        const plotWidth = width - margin.left - margin.right;
+        const plotHeight = height - margin.top - margin.bottom;
+        const xMin = config.xMin ?? 0;
+        const xMax = config.xMax ?? 100;
+        const yMin = config.yMin;
+        const yMax = config.yMax;
+        const tickDigits = config.yTickDigits ?? 2;
+
+        const xScale = (value) => margin.left + ((value - xMin) / (xMax - xMin)) * plotWidth;
+        const yScale = (value) => margin.top + ((yMax - value) / (yMax - yMin)) * plotHeight;
+        const svg = createSvgElement("svg", {
+          viewBox: `0 0 ${width} ${height}`,
+          role: "img",
+          "aria-label": config.label
+        });
+        const title = createSvgElement("title");
+        title.textContent = config.label;
+        svg.appendChild(title);
+
+        config.yTicks.forEach((tick) => {
+          const y = yScale(tick);
+          svg.appendChild(createSvgElement("line", {
+            class: "chart-grid-line",
+            x1: margin.left,
+            y1: y,
+            x2: width - margin.right,
+            y2: y
+          }));
+          appendSvgText(svg, tick.toFixed(tickDigits), {
+            class: "chart-tick",
+            x: margin.left - 10,
+            y: y + 4,
+            "text-anchor": "end"
+          });
+        });
+
+        config.xTicks.forEach((tick) => {
+          const x = xScale(tick.value);
+          svg.appendChild(createSvgElement("line", {
+            class: "chart-grid-line",
+            x1: x,
+            y1: margin.top,
+            x2: x,
+            y2: height - margin.bottom
+          }));
+          appendSvgText(svg, tick.label, {
+            class: "chart-tick",
+            x,
+            y: height - 18,
+            "text-anchor": "middle"
+          });
+        });
+
+        svg.appendChild(createSvgElement("line", {
+          class: "chart-axis-line",
+          x1: margin.left,
+          y1: height - margin.bottom,
+          x2: width - margin.right,
+          y2: height - margin.bottom
+        }));
+        svg.appendChild(createSvgElement("line", {
+          class: "chart-axis-line",
+          x1: margin.left,
+          y1: margin.top,
+          x2: margin.left,
+          y2: height - margin.bottom
+        }));
+
+        appendSvgText(svg, config.xAxisLabel || "Training step", {
+          class: "chart-axis-title",
+          x: margin.left + plotWidth / 2,
+          y: height - 2,
+          "text-anchor": "middle"
+        });
+        appendSvgText(svg, config.yAxisLabel || "Score", {
+          class: "chart-axis-title",
+          x: margin.left,
+          y: 12,
+          "text-anchor": "start"
+        });
+
+        if (config.reference) {
+          const y = yScale(config.reference.value);
+          svg.appendChild(createSvgElement("line", {
+            class: "chart-reference",
+            x1: margin.left,
+            y1: y,
+            x2: width - margin.right,
+            y2: y
+          }));
+        }
+
+        config.series.forEach((series) => {
+          const points = series.points.map((point) => [xScale(point.x), yScale(point.y)]);
+          const pathData = points.map(([x, y], index) => `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`).join(" ");
+          svg.appendChild(createSvgElement("path", {
+            class: "chart-line",
+            d: pathData,
+            stroke: series.color
+          }));
+
+          series.points.forEach((point) => {
+            const circle = createSvgElement("circle", {
+              class: "chart-point",
+              cx: xScale(point.x),
+              cy: yScale(point.y),
+              r: 4,
+              fill: series.color,
+              tabindex: "0"
+            });
+            const pointTitle = createSvgElement("title");
+            pointTitle.textContent = `${series.label}, ${config.xAxisLabel || "step"} ${point.label || point.x}: ${formatScore(point.y, config.valueDigits || 3)}`;
+            circle.appendChild(pointTitle);
+            svg.appendChild(circle);
+          });
+        });
+
+        target.appendChild(svg);
+        appendLegend(
+          target,
+          config.series.map((series) => ({ label: series.label, color: series.color })),
+          config.reference ? { label: config.reference.label, color: chartPalette.dark, dashed: true } : null
+        );
+      }
+
+      function renderGroupedBarChart(selector, config) {
+        const target = document.querySelector(selector);
+        if (!target) {
+          return;
+        }
+
+        target.innerHTML = "";
+        const width = 640;
+        const height = 320;
+        const margin = { top: 26, right: 24, bottom: 54, left: 54 };
+        const plotWidth = width - margin.left - margin.right;
+        const plotHeight = height - margin.top - margin.bottom;
+        const yMax = config.yMax;
+        const groupWidth = plotWidth / config.data.length;
+        const barGap = 7;
+        const barWidth = Math.min(34, (groupWidth - 32) / config.series.length - barGap);
+        const yScale = (value) => margin.top + ((yMax - value) / yMax) * plotHeight;
+        const svg = createSvgElement("svg", {
+          viewBox: `0 0 ${width} ${height}`,
+          role: "img",
+          "aria-label": config.label
+        });
+        const title = createSvgElement("title");
+        title.textContent = config.label;
+        svg.appendChild(title);
+
+        config.yTicks.forEach((tick) => {
+          const y = yScale(tick);
+          svg.appendChild(createSvgElement("line", {
+            class: "chart-grid-line",
+            x1: margin.left,
+            y1: y,
+            x2: width - margin.right,
+            y2: y
+          }));
+          appendSvgText(svg, String(tick), {
+            class: "chart-tick",
+            x: margin.left - 10,
+            y: y + 4,
+            "text-anchor": "end"
+          });
+        });
+
+        svg.appendChild(createSvgElement("line", {
+          class: "chart-axis-line",
+          x1: margin.left,
+          y1: height - margin.bottom,
+          x2: width - margin.right,
+          y2: height - margin.bottom
+        }));
+        svg.appendChild(createSvgElement("line", {
+          class: "chart-axis-line",
+          x1: margin.left,
+          y1: margin.top,
+          x2: margin.left,
+          y2: height - margin.bottom
+        }));
+
+        appendSvgText(svg, "Score", {
+          class: "chart-axis-title",
+          x: margin.left,
+          y: 13,
+          "text-anchor": "start"
+        });
+
+        config.data.forEach((group, groupIndex) => {
+          const groupX = margin.left + groupIndex * groupWidth + groupWidth / 2;
+          appendSvgText(svg, group.metric, {
+            class: "chart-method-label",
+            x: groupX,
+            y: height - 20,
+            "text-anchor": "middle"
+          });
+
+          const totalBarWidth = config.series.length * barWidth + (config.series.length - 1) * barGap;
+          const startX = groupX - totalBarWidth / 2;
+          config.series.forEach((series, seriesIndex) => {
+            const value = group[series.key];
+            const barHeight = height - margin.bottom - yScale(value);
+            const x = startX + seriesIndex * (barWidth + barGap);
+            const y = yScale(value);
+            const bar = createSvgElement("rect", {
+              class: "chart-bar",
+              x,
+              y,
+              width: barWidth,
+              height: barHeight,
+              rx: 6,
+              fill: series.color,
+              tabindex: "0"
+            });
+            const barTitle = createSvgElement("title");
+            barTitle.textContent = `${series.label}, ${group.metric}: ${value.toFixed(1)}`;
+            bar.appendChild(barTitle);
+            svg.appendChild(bar);
+
+            appendSvgText(svg, value.toFixed(1), {
+              class: "chart-value-label",
+              x: x + barWidth / 2,
+              y: y - 7,
+              "text-anchor": "middle"
+            });
+          });
+        });
+
+        target.appendChild(svg);
+        appendLegend(target, config.series, null);
+      }
+
+      function renderCharts() {
+        renderBenchmarkChart(activeBenchmarkMetric);
+
+        renderLineChart("#distill-worldtasks-chart", {
+          label: "Average WorldTasks score across self-distillation variants",
+          series: distillSeries.map((series) => ({
+            label: series.label,
+            color: series.color,
+            points: series.worldTasks
+          })),
+          reference: { label: "Demonstrator", value: 0.600 },
+          xMin: 0,
+          xMax: 100,
+          yMin: 0.44,
+          yMax: 0.61,
+          yTicks: [0.45, 0.50, 0.55, 0.60],
+          xTicks: [0, 20, 40, 60, 80, 100].map((value) => ({ value, label: String(value) })),
+          valueDigits: 3
+        });
+
+        renderLineChart("#distill-pick-chart", {
+          label: "PickScore across self-distillation variants",
+          series: distillSeries.map((series) => ({
+            label: series.label,
+            color: series.color,
+            points: series.pick
+          })),
+          reference: { label: "Demonstrator", value: 0.7599 },
+          xMin: 0,
+          xMax: 100,
+          yMin: 0.7595,
+          yMax: 0.7640,
+          yTicks: [0.760, 0.761, 0.762, 0.763, 0.764],
+          yTickDigits: 3,
+          xTicks: [0, 20, 40, 60, 80, 100].map((value) => ({ value, label: String(value) })),
+          valueDigits: 4
+        });
+
+        renderLineChart("#beta-chart", {
+          label: "Average WorldTasks score across beta_d values",
+          series: betaSeries,
+          reference: { label: "Demonstrator", value: 0.623 },
+          xMin: 0,
+          xMax: betaLabels.length - 1,
+          yMin: 0.52,
+          yMax: 0.67,
+          yTicks: [0.54, 0.56, 0.58, 0.60, 0.62, 0.64, 0.66],
+          xTicks: betaLabels.map((label, value) => ({ value, label })),
+          xAxisLabel: "beta_d",
+          valueDigits: 3
+        });
+
+        renderLineChart("#rl-task-chart", {
+          label: "Task score across RL ablations",
+          series: rlSeries.map((series) => ({ label: series.label, color: series.color, points: series.task })),
+          reference: { label: "Demonstrator", value: 0.545 },
+          xMin: 0,
+          xMax: 100,
+          yMin: 0.30,
+          yMax: 0.66,
+          yTicks: [0.30, 0.40, 0.50, 0.60],
+          xTicks: [0, 20, 40, 60, 80, 100].map((value) => ({ value, label: String(value) })),
+          valueDigits: 3
+        });
+
+        renderLineChart("#rl-agent-chart", {
+          label: "Agent score across RL ablations",
+          series: rlSeries.map((series) => ({ label: series.label, color: series.color, points: series.agent })),
+          reference: { label: "Demonstrator", value: 0.605 },
+          xMin: 0,
+          xMax: 100,
+          yMin: 0.35,
+          yMax: 0.78,
+          yTicks: [0.40, 0.50, 0.60, 0.70],
+          xTicks: [0, 20, 40, 60, 80, 100].map((value) => ({ value, label: String(value) })),
+          valueDigits: 3
+        });
+
+        renderLineChart("#rl-realism-chart", {
+          label: "Realism score across RL ablations",
+          series: rlSeries.map((series) => ({ label: series.label, color: series.color, points: series.realism })),
+          reference: { label: "Demonstrator", value: 0.720 },
+          xMin: 0,
+          xMax: 100,
+          yMin: 0.64,
+          yMax: 0.88,
+          yTicks: [0.65, 0.70, 0.75, 0.80, 0.85],
+          xTicks: [0, 20, 40, 60, 80, 100].map((value) => ({ value, label: String(value) })),
+          valueDigits: 3
+        });
+
+        renderGroupedBarChart("#robotics-chart", {
+          label: "DreamGen robotics transfer scores",
+          series: roboticsSeries,
+          data: roboticsResults,
+          yMax: 80,
+          yTicks: [0, 20, 40, 60, 80]
+        });
+      }
+
+      function cleanText(parts) {
+        return parts
+          .join(" ")
+          .replace(/\b([A-Za-z0-9-]+) s\b/g, "$1's")
+          .replace(/\byou re\b/g, "you're")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function parseFileName(file) {
+        const stem = file.replace(/\.mp4$/i, "");
+        const id = stem.slice(0, 6);
+        const parts = stem.replace(/^\d+_/, "").split("_");
+        const splitAt = parts.findIndex((part) => actionVerbs.has(part));
+        const descriptionParts = splitAt > 0 ? parts.slice(0, splitAt) : parts.slice(0, 1);
+        const taskParts = splitAt > 0 ? parts.slice(splitAt) : parts.slice(1);
+        const description = cleanText(descriptionParts);
+        const task = cleanText(taskParts);
+
+        return {
+          id,
+          description,
+          task,
+          title: `[${description}]: ${task}`
+        };
+      }
+
+      function posterName(file) {
+        return file.replace(/\.mp4$/i, ".jpg");
+      }
+
+      function createVideoCell(src, poster, label, labelClass) {
+        return `
+          <article class="video-cell">
+            <div class="video-label">
+              <span class="${labelClass}">${label}</span>
+            </div>
+            <video autoplay controls muted loop playsinline preload="metadata" poster="${poster}" src="${src}"></video>
+          </article>
+        `;
+      }
+
+      function visibleGroups() {
+        return comparisonGroups
+          .filter((group) => group.id === activeFilter)
+          .map((group) => ({
+            ...group,
+            files: group.files
+          }));
+      }
+
+      function renderGallery() {
+        const grid = document.querySelector("#comparison-grid");
+        const groups = visibleGroups();
+        const cards = groups.flatMap((group) => {
+          return group.files.map((file) => {
+            const parsed = parseFileName(file);
+            const wmsdSrc = `${group.wmsdDirectory}${file}`;
+            const baseSrc = `${group.baseDirectory}${file}`;
+            const wmsdPoster = `${group.posterWmsdDirectory}${posterName(file)}`;
+            const basePoster = `${group.posterBaseDirectory}${posterName(file)}`;
+
+            return `
+              <section class="comparison-card" data-model="${group.id}" id="${group.id}-${parsed.id}">
+                <div class="comparison-head">
+                  <div class="sample-line">
+                    <span>${group.name}</span>
+                    <span>Sample ${parsed.id}</span>
+                  </div>
+                  <h3>${parsed.title}</h3>
+                </div>
+                <div class="video-pair">
+                  ${createVideoCell(wmsdSrc, wmsdPoster, "WMSD", "ours")}
+                  ${createVideoCell(baseSrc, basePoster, "Base", "base")}
+                </div>
+              </section>
+            `;
+          });
+        });
+
+        grid.innerHTML = cards.join("");
+        syncVideoPairs();
+        autoplayComparisonVideos();
+      }
+
+      function autoplayComparisonVideos() {
+        document.querySelectorAll("#comparison-grid video").forEach((video) => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
+
+      function syncVideoPairs() {
+        document.querySelectorAll(".comparison-card").forEach((entry) => {
+          const videos = Array.from(entry.querySelectorAll("video"));
+          if (videos.length !== 2) {
+            return;
+          }
+
+          let syncing = false;
+
+          function withSyncLock(callback) {
+            syncing = true;
+            callback();
+            window.setTimeout(() => {
+              syncing = false;
+            }, 0);
+          }
+
+          videos.forEach((video, index) => {
+            const other = videos[index === 0 ? 1 : 0];
+
+            video.addEventListener("play", () => {
+              if (syncing) {
+                return;
+              }
+
+              withSyncLock(() => {
+                if (Math.abs(other.currentTime - video.currentTime) > 0.18) {
+                  other.currentTime = video.currentTime;
+                }
+                other.playbackRate = video.playbackRate;
+                other.play().catch(() => {});
+              });
+            });
+
+            video.addEventListener("pause", () => {
+              if (syncing || video.ended) {
+                return;
+              }
+
+              withSyncLock(() => {
+                other.pause();
+              });
+            });
+
+            video.addEventListener("seeked", () => {
+              if (syncing || Math.abs(other.currentTime - video.currentTime) <= 0.18) {
+                return;
+              }
+
+              withSyncLock(() => {
+                other.currentTime = video.currentTime;
+              });
+            });
+
+            video.addEventListener("ratechange", () => {
+              if (syncing || other.playbackRate === video.playbackRate) {
+                return;
+              }
+
+              withSyncLock(() => {
+                other.playbackRate = video.playbackRate;
+              });
+            });
+          });
+        });
+      }
+
+      function syncRobotVideos() {
+        const videos = Array.from(document.querySelectorAll(".robot-gallery video"));
+        if (videos.length < 2) {
+          return;
+        }
+
+        let syncing = false;
+
+        function withSyncLock(callback) {
+          syncing = true;
+          callback();
+          window.setTimeout(() => {
+            syncing = false;
+          }, 0);
+        }
+
+        videos.forEach((video) => {
+          video.addEventListener("play", () => {
+            if (syncing) {
+              return;
+            }
+
+            withSyncLock(() => {
+              videos.forEach((other) => {
+                if (other === video) {
+                  return;
+                }
+
+                if (Math.abs(other.currentTime - video.currentTime) > 0.18) {
+                  other.currentTime = video.currentTime;
+                }
+                other.playbackRate = video.playbackRate;
+                other.play().catch(() => {});
+              });
+            });
+          });
+
+          video.addEventListener("pause", () => {
+            if (syncing || video.ended) {
+              return;
+            }
+
+            withSyncLock(() => {
+              videos.forEach((other) => {
+                if (other !== video) {
+                  other.pause();
+                }
+              });
+            });
+          });
+
+          video.addEventListener("seeked", () => {
+            if (syncing) {
+              return;
+            }
+
+            withSyncLock(() => {
+              videos.forEach((other) => {
+                if (other !== video && Math.abs(other.currentTime - video.currentTime) > 0.18) {
+                  other.currentTime = video.currentTime;
+                }
+              });
+            });
+          });
+
+          video.addEventListener("ratechange", () => {
+            if (syncing) {
+              return;
+            }
+
+            withSyncLock(() => {
+              videos.forEach((other) => {
+                if (other !== video && other.playbackRate !== video.playbackRate) {
+                  other.playbackRate = video.playbackRate;
+                }
+              });
+            });
+          });
+        });
+      }
+
+      function autoplayRobotVideos() {
+        const videos = Array.from(document.querySelectorAll(".robot-gallery video"));
+        videos.forEach((video) => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
+
+      function pauseAllVideos() {
+        document.querySelectorAll("video").forEach((video) => {
+          video.pause();
+        });
+      }
+
+      function setupControls() {
+        const methodFigure = document.querySelector("[data-method-figure]");
+        const methodSteps = Array.from(document.querySelectorAll("[data-method-target]"));
+
+        if (methodFigure && methodSteps.length) {
+          methodSteps.forEach((step) => {
+            const target = step.dataset.methodTarget;
+            step.addEventListener("mouseenter", () => {
+              methodFigure.dataset.activeMethod = target;
+            });
+            step.addEventListener("focus", () => {
+              methodFigure.dataset.activeMethod = target;
+            });
+            step.addEventListener("mouseleave", () => {
+              delete methodFigure.dataset.activeMethod;
+            });
+            step.addEventListener("blur", () => {
+              delete methodFigure.dataset.activeMethod;
+            });
+          });
+        }
+
+        document.querySelectorAll(".metric-tab").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeBenchmarkMetric = button.dataset.metric;
+            document.querySelectorAll(".metric-tab").forEach((tab) => {
+              tab.setAttribute("aria-selected", String(tab === button));
+            });
+            renderBenchmarkChart(activeBenchmarkMetric);
+          });
+        });
+
+        document.querySelectorAll(".tab").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeFilter = button.dataset.filter;
+            pauseAllVideos();
+            document.querySelectorAll(".tab").forEach((tab) => {
+              tab.setAttribute("aria-selected", String(tab === button));
+            });
+            renderGallery();
+          });
+        });
+
+        document.querySelector('[data-action="pause-all"]').addEventListener("click", pauseAllVideos);
+
+        document.querySelector('[data-action="copy-citation"]').addEventListener("click", async (event) => {
+          const bibtex = document.querySelector("#bibtex").textContent;
+          try {
+            await navigator.clipboard.writeText(bibtex);
+            event.currentTarget.textContent = "Copied";
+            window.setTimeout(() => {
+              event.currentTarget.textContent = "Copy";
+            }, 1600);
+          } catch (error) {
+            event.currentTarget.textContent = "Select Text";
+          }
+        });
+      }
+
+      renderCharts();
+      renderGallery();
+      syncRobotVideos();
+      autoplayRobotVideos();
+      setupControls();
+    </script>
+  </body>
+</html>
