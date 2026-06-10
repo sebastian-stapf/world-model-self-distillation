@@ -11,7 +11,7 @@ World Model Self-Distillation (WMSD) adapts pretrained video generation models i
 ## Resources
 
 - Project page: https://sebastian-stapf.github.io/world-model-self-distillation/
-- Dataset: https://huggingface.co/datasets/wiqzard2000/WorldTasks
-- Weights: https://huggingface.co/wiqzard2000/World-Model-Self-Distillation
+- Dataset: https://huggingface.co/datasets/sebastian-stapf/WorldTasks
+- Weights: https://huggingface.co/sebastian-stapf/World-Model-Self-Distillation
 
 Code will be released later.
